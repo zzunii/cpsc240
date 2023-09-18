@@ -1,0 +1,118 @@
+     1                                  global manage
+     2                                  extern input_array
+     3                                  extern output_array
+     4                                  extern sum_array
+     5                                  extern printf
+     6                                  extern callf
+     7                                  
+     8                                  max_size equ 8
+     9                                  
+    10                                  section .data
+    11 00000000 57652077696C6C2074-         intro1 db "We will take care of all of your array needs.", 10, 0
+    11 00000009 616B65206361726520-
+    11 00000012 6F6620616C6C206F66-
+    11 0000001B 20796F757220617272-
+    11 00000024 6179206E656564732E-
+    11 0000002D 0A00               
+    12 0000002F 5468616E6B20796F75-         thanks db "Thank you. The numbers in the array are: ", 0
+    12 00000038 2E20546865206E756D-
+    12 00000041 6265727320696E2074-
+    12 0000004A 686520617272617920-
+    12 00000053 6172653A2000       
+    13 00000059 5468652073756D206F-         final1 db "The sum of numbers in the array is %lf", 0
+    13 00000062 66206E756D62657273-
+    13 0000006B 20696E207468652061-
+    13 00000074 727261792069732025-
+    13 0000007D 6C6600             
+    14 00000080 5468616E6B20796F75-         final2 db "Thank you for using Array Management System.", 0
+    14 00000089 20666F72207573696E-
+    14 00000092 67204172726179204D-
+    14 0000009B 616E6167656D656E74-
+    14 000000A4 2053797374656D2E00 
+    15                                  
+    16 000000AD 257300                      stringformat db "%s", 0
+    17 000000B0 256C6600                    floatformat db "%lf", 0
+    18                                  
+    19                                  section .bss
+    20 00000000 <res 40h>                   array resq max_size
+    21                                  
+    22                                  section .text
+    23                                  
+    24                                  
+    25                                  manage:
+    26                                  ; =======================================
+    27                                  ;  * * * * * * * 16 PUSHES * * * * * * *
+    28                                  ; =======================================
+    29 00000000 55                          push       rbp                                              
+    30 00000001 4889E5                      mov        rbp, rsp                                         
+    31 00000004 53                          push       rbx                                              
+    32 00000005 51                          push       rcx                                              
+    33 00000006 52                          push       rdx                                              
+    34 00000007 56                          push       rsi                                              
+    35 00000008 57                          push       rdi                                              
+    36 00000009 4150                        push       r8                                               
+    37 0000000B 4151                        push       r9                                               
+    38 0000000D 4152                        push       r10                                              
+    39 0000000F 4153                        push       r11                                              
+    40 00000011 4154                        push       r12                                              
+    41 00000013 4155                        push       r13                                              
+    42 00000015 4156                        push       r14                                              
+    43 00000017 4157                        push       r15                                              
+    44 00000019 9C                          pushf
+    45                                  
+    46                                  ; =======================================
+    47                                  ;  * *  * START OF THE APPLICATION * * * 
+    48                                  ; =======================================
+    49                                  
+    50                                  ; Print intro1
+    51                                      
+    52 0000001A B800000000                  mov rax, 0
+    53 0000001F 48BF-                       mov rdi, stringformat
+    53 00000021 [AD00000000000000] 
+    54 00000029 48BE-                       mov rsi, intro1
+    54 0000002B [0000000000000000] 
+    55 00000033 E8(00000000)                call printf
+    56                                  
+    57                                  ; block to call input_array
+    58                                  
+    59 00000038 B800000000                  mov rax, 0
+    60 0000003D 48BF-                       mov rdi, array
+    60 0000003F [0000000000000000] 
+    61 00000047 BE08000000                  mov rsi, max_size
+    62 0000004C E8(00000000)                call input_array
+    63                                  
+    64                                  ; block to call output_array
+    65                                  
+    66 00000051 B800000000                  mov rax, 0
+    67 00000056 48BF-                       mov rdi, array
+    67 00000058 [0000000000000000] 
+    68 00000060 BE08000000                  mov rsi, max_size
+    69 00000065 E8(00000000)                call output_array
+    70                                  
+    71                                  
+    72                                  ; block to call sum_array
+    73                                  
+    74                                  ; block to print & return sum_array results
+    75                                  
+    76                                  ; =======================================
+    77                                  ;  * * * * * * * 16 PUSHES * * * * * * *
+    78                                  ; =======================================
+    79 0000006A 9D                          popf                                                        
+    80 0000006B 415F                        pop        r15                                              
+    81 0000006D 415E                        pop        r14                                              
+    82 0000006F 415D                        pop        r13                                              
+    83 00000071 415C                        pop        r12                                              
+    84 00000073 415B                        pop        r11                                              
+    85 00000075 415A                        pop        r10                                              
+    86 00000077 4159                        pop        r9                                               
+    87 00000079 4158                        pop        r8                                               
+    88 0000007B 5F                          pop        rdi                                              
+    89 0000007C 5E                          pop        rsi                                              
+    90 0000007D 5A                          pop        rdx                                              
+    91 0000007E 59                          pop        rcx                                              
+    92 0000007F 5B                          pop        rbx                                              
+    93 00000080 5D                          pop        rbp      
+    94                                  
+    95 00000081 C3                          ret
+    96                                  
+    97                                  

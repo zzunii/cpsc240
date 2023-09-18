@@ -1,0 +1,113 @@
+     1                                  global input_array
+     2                                  extern scanf
+     3                                  extern printf
+     4                                  
+     5                                  section .data
+     6 00000000 200A00                      newline db " ", 10, 0
+     7 00000003 256C6600                    floatformat db "%lf", 0
+     8 00000007 257300                      stringformat db "%s", 0 
+     9 0000000A 506C6561736520696E-         prompt db "Please input float numbers seperated by WS. After the last number, press WS followed by control-d", 10, 0
+     9 00000013 70757420666C6F6174-
+     9 0000001C 206E756D6265727320-
+     9 00000025 736570657261746564-
+     9 0000002E 2062792057532E2041-
+     9 00000037 667465722074686520-
+     9 00000040 6C617374206E756D62-
+     9 00000049 65722C207072657373-
+     9 00000052 20575320666F6C6C6F-
+     9 0000005B 77656420627920636F-
+     9 00000064 6E74726F6C2D640A00 
+    10 0000006D 596F7572206E756D62-         debug db "Your number: %lf",10, 0
+    10 00000076 65723A20256C660A00 
+    11 0000007F 526561636865642065-         testy db "Reached end of loop", 0
+    11 00000088 6E64206F66206C6F6F-
+    11 00000091 7000               
+    12                                  
+    13                                  section .bss
+    14                                  
+    15                                  section .text
+    16                                  input_array:
+    17                                  
+    18                                  ; ======================================= 
+    19                                  ;  * * * * * * * 16 PUSHES * * * * * * *  
+    20                                  ; ======================================= 
+    21 00000000 55                          push       rbp                                              
+    22 00000001 4889E5                      mov        rbp, rsp                                         
+    23 00000004 53                          push       rbx                                              
+    24 00000005 51                          push       rcx                                              
+    25 00000006 52                          push       rdx                                              
+    26 00000007 56                          push       rsi                                              
+    27 00000008 57                          push       rdi                                              
+    28 00000009 4150                        push       r8                                               
+    29 0000000B 4151                        push       r9                                               
+    30 0000000D 4152                        push       r10                                              
+    31 0000000F 4153                        push       r11                                              
+    32 00000011 4154                        push       r12                                              
+    33 00000013 4155                        push       r13                                              
+    34 00000015 4156                        push       r14                                              
+    35 00000017 4157                        push       r15                                              
+    36 00000019 9C                          pushf
+    37                                  
+    38                                  ; =======================================
+    39                                  ;  * * * START OF THE APPLICATION * * *
+    40                                  ; =======================================
+    41                                  
+    42                                  ; Print prompt
+    43                                  
+    44 0000001A B800000000                  mov rax, 0
+    45 0000001F 48BF-                       mov rdi, stringformat
+    45 00000021 [0700000000000000] 
+    46 00000029 48BE-                       mov rsi, prompt
+    46 0000002B [0A00000000000000] 
+    47 00000033 E8(00000000)                call printf
+    48                                  
+    49 00000038 4989FE                      mov r14, rdi            ; r14 is the array
+    50 0000003B 4989F7                      mov r15, rsi            ; r15 is the number of cells
+    51 0000003E 4D31ED                      xor r13, r13   
+    52                                  begin:
+    53                                           
+    54 00000041 4D39FD                      cmp r13, r15            ; if r13 > r15
+    55 00000044 7D28                        jge done                 ; then we are done
+    56 00000046 B800000000                  mov rax, 0              ; clear rax
+    57 0000004B 48BF-                       mov rdi, floatformat    ; first incoming parameter
+    57 0000004D [0300000000000000] 
+    58                                      ;push qword 0        
+    59                                      ;push qword 0           ; segfault -_-
+    60 00000055 4889E6                      mov rsi, rsp            ; second incoming parameter
+    61 00000058 E8(00000000)                call scanf
+    62                                  
+    63 0000005D 4898                        cdqe                    ; 
+    64 0000005F 4883F8FF                    cmp rax, -1             ; checks for control_d
+    65 00000063 7409                        je done                 ; control_d is pressed
+    66                                      
+    67                                      ;pop rbx
+    68 00000065 4B891CEE                    mov [r14 + r13 * 8], rbx
+    69 00000069 49FFC5                      inc r13                 ; increment r13 by one OR r13++
+    70                                      ;pop rax
+    71                                  
+    72 0000006C EBD3                        jmp begin
+    73                                  
+    74                                  done:
+    75                                  
+    76 0000006E 4C89E8                      mov rax, r13
+    77                                  
+    78                                  ; =======================================
+    79                                  ; * * * * * * * * 16 POPS * * * * * * * *
+    80                                  ; =======================================
+    81 00000071 9D                          popf                                                        
+    82 00000072 415F                        pop        r15                                              
+    83 00000074 415E                        pop        r14                                              
+    84 00000076 415D                        pop        r13                                              
+    85 00000078 415C                        pop        r12                                              
+    86 0000007A 415B                        pop        r11                                              
+    87 0000007C 415A                        pop        r10                                              
+    88 0000007E 4159                        pop        r9                                               
+    89 00000080 4158                        pop        r8                                               
+    90 00000082 5F                          pop        rdi                                              
+    91 00000083 5E                          pop        rsi                                              
+    92 00000084 5A                          pop        rdx                                              
+    93 00000085 59                          pop        rcx                                              
+    94 00000086 5B                          pop        rbx                                              
+    95 00000087 5D                          pop        rbp      
+    96                                  
+    97 00000088 C3                          ret
