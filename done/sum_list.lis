@@ -1,0 +1,107 @@
+     1                                  ; =====================================================================================================================
+     2                                  ; Program name: "Array Management System". This program demonstrates how to pass an array
+     3                                  ; Through assembly language and gathers the sum of the array. The max array length is 8.
+     4                                  ; Copyright (C) 2023 Dylan Zuniga
+     5                                  ;
+     6                                  ; Author Information
+     7                                  ;     Author Name: Dylan Zuniga
+     8                                  ;     Author Email: zuniga18dz@csu.fullerton.edu
+     9                                  ;
+    10                                  ; Program Information
+    11                                  ;     Program Name: Array Management System
+    12                                  ;     Programming Languages: One module in C, four in x86
+    13                                  ;     Date Program Began: 2023-Sep-05
+    14                                  ;     Date Program Completed: 2023-Sep-24
+    15                                  ;     Date Comments Upgraded: 2023-Sep-24
+    16                                  ;     Files in the program: main.c, manage.asm, input_array.asm, output_array.asm, sum_array.asm, run.sh
+    17                                  ;     Status: Completed. Challenge Part not present in program.
+    18                                  ;
+    19                                  ; Purpose (Academic)
+    20                                  ;     Allow's the user to input 8 numbers into an array and get the total sum of the array
+    21                                  ;
+    22                                  ; This file
+    23                                  ;     File Name: sum_array.asm
+    24                                  ;     Langauge: x86
+    25                                  ;     Syntax: Intel
+    26                                  ;     Assemble: nasm -f elf64 -l sum_list.lis -o sum-asm.o sum_array.asm
+    27                                  ;     Link: gcc -m64 c-output.o manage-asm.o input-asm.o output-asm.o sum-asm.o -o arrayzz -fno-pie -no-pie -std=c++17
+    28                                  ; ===== Begin code area ===============================================================================================
+    29                                  
+    30                                  extern manage
+    31                                  extern printf
+    32                                  extern scanf
+    33                                  global sum_array
+    34                                  
+    35                                  section .data
+    36 00000000 5468652073756D206F-         sum db "The sum of numbers in the array is %.10f",10,0
+    36 00000009 66206E756D62657273-
+    36 00000012 20696E207468652061-
+    36 0000001B 727261792069732025-
+    36 00000024 2E3130660A00       
+    37                                  section .bss
+    38                                  
+    39                                  section .text
+    40                                  sum_array:
+    41                                  ; ======================================= 
+    42                                  ;  * * * * * * * 16 PUSHES * * * * * * *  
+    43                                  ; ======================================= 
+    44 00000000 55                          push       rbp                                              
+    45 00000001 4889E5                      mov        rbp, rsp                                         
+    46 00000004 53                          push       rbx                                              
+    47 00000005 51                          push       rcx                                              
+    48 00000006 52                          push       rdx                                              
+    49 00000007 56                          push       rsi                                              
+    50 00000008 57                          push       rdi                                              
+    51 00000009 4150                        push       r8                                               
+    52 0000000B 4151                        push       r9                                               
+    53 0000000D 4152                        push       r10                                              
+    54 0000000F 4153                        push       r11                                              
+    55 00000011 4154                        push       r12                                              
+    56 00000013 4155                        push       r13                                              
+    57 00000015 4156                        push       r14                                              
+    58 00000017 4157                        push       r15                                              
+    59 00000019 9C                          pushf
+    60                                  
+    61                                  ; =======================================
+    62                                  ;  * * * START OF THE APPLICATION * * *
+    63                                  ; =======================================
+    64                                  
+    65 0000001A 4989FD                      mov r13, rdi                ; array
+    66 0000001D 4989F6                      mov r14, rsi                ; array length
+    67 00000020 4D31FF                      xor r15, r15                ; count
+    68 00000023 66450F57C0                  xorpd xmm8, xmm8            ; The sum of the array
+    69                                  
+    70                                  sum_begin:
+    71                                  
+    72 00000028 4D39F7                      cmp r15, r14
+    73 0000002B 7D11                        jge sum_done
+    74                                  
+    75 0000002D F2470F104CFD00              movsd xmm9, [r13+8*r15]
+    76 00000034 F2450F58C1                  addsd xmm8, xmm9
+    77                                  
+    78 00000039 49FFC7                      inc r15
+    79 0000003C EBEA                        jmp sum_begin
+    80                                  
+    81                                  sum_done:
+    82                                  
+    83 0000003E F2410F10C0                  movsd xmm0, xmm8
+    84                                  ; =======================================
+    85                                  ; * * * * * * * * 16 POPS * * * * * * * *
+    86                                  ; =======================================
+    87 00000043 9D                          popf                                                        
+    88 00000044 415F                        pop        r15                                              
+    89 00000046 415E                        pop        r14                                              
+    90 00000048 415D                        pop        r13                                              
+    91 0000004A 415C                        pop        r12                                              
+    92 0000004C 415B                        pop        r11                                              
+    93 0000004E 415A                        pop        r10                                              
+    94 00000050 4159                        pop        r9                                               
+    95 00000052 4158                        pop        r8                                               
+    96 00000054 5F                          pop        rdi                                              
+    97 00000055 5E                          pop        rsi                                              
+    98 00000056 5A                          pop        rdx                                              
+    99 00000057 59                          pop        rcx                                              
+   100 00000058 5B                          pop        rbx                                              
+   101 00000059 5D                          pop        rbp      
+   102                                  
+   103 0000005A C3                          ret
