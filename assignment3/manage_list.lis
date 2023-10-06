@@ -1,168 +1,204 @@
-     1                                  global  asmfunction
+     1                                  global  director
      2                                  extern  input_array
      3                                  extern  output_array
-     4                                  extern  printf
-     5                                  extern  scanf
-     6                                  max_size equ 10
-     7                                  
-     8                                  section .data
-     9 00000000 546869732070726F67-         intro db "This program will sort all of your doubles",0
-     9 00000009 72616D2077696C6C20-
-     9 00000012 736F727420616C6C20-
-     9 0000001B 6F6620796F75722064-
-     9 00000024 6F75626C657300     
-    10 0000002B 506C6561736520656E-         prompt db "Please enter floating point numbers seperated by white space. After the last numeric input enter at least one more white space and press ctrl-d.",0
-    10 00000034 74657220666C6F6174-
-    10 0000003D 696E6720706F696E74-
-    10 00000046 206E756D6265727320-
-    10 0000004F 736570657261746564-
-    10 00000058 206279207768697465-
-    10 00000061 2073706163652E2041-
-    10 0000006A 667465722074686520-
-    10 00000073 6C617374206E756D65-
-    10 0000007C 72696320696E707574-
-    10 00000085 20656E746572206174-
-    10 0000008E 206C65617374206F6E-
-    10 00000097 65206D6F7265207768-
-    10 000000A0 697465207370616365-
-    10 000000A9 20616E642070726573-
-    10 000000B2 73206374726C2D642E-
-    10 000000BB 00                 
-    11 000000BC 5468616E6B20796F75-         thanks db "Thank you. You entered these numbers",0
-    11 000000C5 2E20596F7520656E74-
-    11 000000CE 657265642074686573-
-    11 000000D7 65206E756D62657273-
-    11 000000E0 00                 
-    12 000000E1 456E64206F66206F75-         end_output db "End of output array.",0
-    12 000000EA 747075742061727261-
-    12 000000F3 792E00             
-    13 000000F6 546865206172726179-         sort_prompt db "The array is now being sorted without moving any numbers.",0
-    13 000000FF 206973206E6F772062-
-    13 00000108 65696E6720736F7274-
-    13 00000111 656420776974686F75-
-    13 0000011A 74206D6F76696E6720-
-    13 00000123 616E79206E756D6265-
-    13 0000012C 72732E00           
-    14 00000130 546865206461746120-         print_array db "The data in the array are now ordered as follows",0
-    14 00000139 696E20746865206172-
-    14 00000142 72617920617265206E-
-    14 0000014B 6F77206F7264657265-
-    14 00000154 6420617320666F6C6C-
-    14 0000015D 6F777300           
-    15 00000161 546865206172726179-         finish db "The array will be sent back to the caller function.",0
-    15 0000016A 2077696C6C20626520-
-    15 00000173 73656E74206261636B-
-    15 0000017C 20746F207468652063-
-    15 00000185 616C6C65722066756E-
-    15 0000018E 6374696F6E2E00     
-    16                                  
-    17 00000195 25730A00                    stringformat db "%s",10,0
-    18 00000199 256C660A00                  floatformat db "%lf",10,0
-    19 0000019E 252E3130660A00              formalfloat db "%.10f",10,0
-    20                                      
-    21                                      ; Debugs (DELETE WHEN FINISHED)
-    22 000001A5 7E206469726563746F-         debugStart db "~ director start ~",10,0
-    22 000001AE 72207374617274207E-
-    22 000001B7 0A00               
-    23                                  
+     4                                  extern  sort_array
+     5                                  extern  printf
+     6                                  extern  scanf
+     7                                  max_size equ 10
+     8                                  
+     9                                  section .data
+    10 00000000 546869732070726F67-         intro db "This program will sort all of your doubles",0
+    10 00000009 72616D2077696C6C20-
+    10 00000012 736F727420616C6C20-
+    10 0000001B 6F6620796F75722064-
+    10 00000024 6F75626C657300     
+    11 0000002B 506C6561736520656E-         prompt db "Please enter floating point numbers seperated by white space. After the last numeric input enter at least one more white space and press ctrl-d.",0
+    11 00000034 74657220666C6F6174-
+    11 0000003D 696E6720706F696E74-
+    11 00000046 206E756D6265727320-
+    11 0000004F 736570657261746564-
+    11 00000058 206279207768697465-
+    11 00000061 2073706163652E2041-
+    11 0000006A 667465722074686520-
+    11 00000073 6C617374206E756D65-
+    11 0000007C 72696320696E707574-
+    11 00000085 20656E746572206174-
+    11 0000008E 206C65617374206F6E-
+    11 00000097 65206D6F7265207768-
+    11 000000A0 697465207370616365-
+    11 000000A9 20616E642070726573-
+    11 000000B2 73206374726C2D642E-
+    11 000000BB 00                 
+    12 000000BC 5468616E6B20796F75-         thanks db "Thank you. You entered these numbers",0
+    12 000000C5 2E20596F7520656E74-
+    12 000000CE 657265642074686573-
+    12 000000D7 65206E756D62657273-
+    12 000000E0 00                 
+    13 000000E1 456E64206F66206F75-         end_output db "End of output array.",0
+    13 000000EA 747075742061727261-
+    13 000000F3 792E00             
+    14 000000F6 546865206172726179-         sort_prompt db "The array is now being sorted without moving any numbers.",0
+    14 000000FF 206973206E6F772062-
+    14 00000108 65696E6720736F7274-
+    14 00000111 656420776974686F75-
+    14 0000011A 74206D6F76696E6720-
+    14 00000123 616E79206E756D6265-
+    14 0000012C 72732E00           
+    15 00000130 546865206461746120-         print_array db "The data in the array are now ordered as follows",0
+    15 00000139 696E20746865206172-
+    15 00000142 72617920617265206E-
+    15 0000014B 6F77206F7264657265-
+    15 00000154 6420617320666F6C6C-
+    15 0000015D 6F777300           
+    16 00000161 546865206172726179-         finish db "The array will be sent back to the caller function.",0
+    16 0000016A 2077696C6C20626520-
+    16 00000173 73656E74206261636B-
+    16 0000017C 20746F207468652063-
+    16 00000185 616C6C65722066756E-
+    16 0000018E 6374696F6E2E00     
+    17                                  
+    18 00000195 25730A00                    stringformat db "%s",10,0
+    19 00000199 256C660A00                  floatformat db "%lf",10,0
+    20 0000019E 252E3130660A00              formalfloat db "%.10f",10,0
+    21                                      
+    22                                      ; Debugs (DELETE WHEN FINISHED)
+    23 000001A5 7E206469726563746F-         debugStart db "~ director start ~",10,0
+    23 000001AE 72207374617274207E-
+    23 000001B7 0A00               
     24                                  
-    25                                  section .bss
-    26 00000000 <res 10h>                   MyTwo resq 2
-    27 00000010 <res 50h>                   items resq max_size
-    28                                  
-    29                                  section .text
-    30                                  asmfunction:    
-    31 00000000 55                          push       rbp                                              
-    32 00000001 4889E5                      mov        rbp, rsp                                         
-    33 00000004 53                          push       rbx                                              
-    34 00000005 51                          push       rcx                                              
-    35 00000006 52                          push       rdx                                              
-    36 00000007 56                          push       rsi                                              
-    37 00000008 57                          push       rdi                                              
-    38 00000009 4150                        push       r8                                               
-    39 0000000B 4151                        push       r9                                               
-    40 0000000D 4152                        push       r10                                              
-    41 0000000F 4153                        push       r11                                              
-    42 00000011 4154                        push       r12                                              
-    43 00000013 4155                        push       r13                                              
-    44 00000015 4156                        push       r14                                              
-    45 00000017 4157                        push       r15                                              
-    46 00000019 9C                          pushf
-    47                                  
-    48                                  ; =========================================================================
-    49                                  
+    25                                  
+    26                                  section .bss
+    27 00000000 <res 10h>                   MyTwo resq 2
+    28 00000010 <res 50h>                   items resq max_size
+    29                                  
+    30                                  section .text
+    31                                  director:    
+    32 00000000 55                          push       rbp                                              
+    33 00000001 4889E5                      mov        rbp, rsp                                         
+    34 00000004 53                          push       rbx                                              
+    35 00000005 51                          push       rcx                                              
+    36 00000006 52                          push       rdx                                              
+    37 00000007 56                          push       rsi                                              
+    38 00000008 57                          push       rdi                                              
+    39 00000009 4150                        push       r8                                               
+    40 0000000B 4151                        push       r9                                               
+    41 0000000D 4152                        push       r10                                              
+    42 0000000F 4153                        push       r11                                              
+    43 00000011 4154                        push       r12                                              
+    44 00000013 4155                        push       r13                                              
+    45 00000015 4156                        push       r14                                              
+    46 00000017 4157                        push       r15                                              
+    47 00000019 9C                          pushf
+    48                                  
+    49                                  ; =========================================================================
     50                                  
-    51 0000001A B800000000                  mov rax, 0                                                              
-    52 0000001F 48BF-                       mov rdi, stringformat                                               ; '%s'
-    52 00000021 [9501000000000000] 
-    53 00000029 48BE-                       mov rsi, debugStart                                                 ; '~ director start ~'
-    53 0000002B [A501000000000000] 
-    54 00000033 E8(00000000)                call printf
-    55                                  
-    56 00000038 B800000000                  mov rax, 0
-    57 0000003D 48BF-                       mov rdi, stringformat                                               ; '%s'
-    57 0000003F [9501000000000000] 
-    58 00000047 48BE-                       mov rsi, intro                                                      ; 'This program will sort all of your doubles'
-    58 00000049 [0000000000000000] 
-    59 00000051 E8(00000000)                call printf                                                         
-    60                                  
-    61 00000056 B800000000                  mov rax, 0
-    62 0000005B 48BF-                       mov rdi, stringformat                                               ; '%s'
-    62 0000005D [9501000000000000] 
-    63 00000065 48BE-                       mov rsi, prompt                                                     ; 'Please enter floating point numbers seperated by white space. After the last numeric input enter at least one more white space and press ctrl-d.'
-    63 00000067 [2B00000000000000] 
-    64 0000006F E8(00000000)                call printf
-    65                                  
-    66                                      ; block for input_array
-    67 00000074 B800000000                  mov rax, 0
-    68 00000079 48BF-                       mov rdi, items
-    68 0000007B [1000000000000000] 
-    69 00000083 BE0A000000                  mov rsi, max_size
-    70 00000088 E8(00000000)                call input_array
-    71 0000008D 4889C3                      mov rbx, rax
-    72                                  
-    73 00000090 B800000000                  mov rax, 0
-    74 00000095 48BF-                       mov rdi, stringformat
-    74 00000097 [9501000000000000] 
-    75 0000009F 48BE-                       mov rsi, thanks
-    75 000000A1 [BC00000000000000] 
-    76 000000A9 E8(00000000)                call printf
-    77                                  
-    78                                      ; block for output_array for the unsorted array
-    79                                  
-    80 000000AE B800000000                  mov rax, 0
-    81 000000B3 48BF-                       mov rdi, items
-    81 000000B5 [1000000000000000] 
-    82 000000BD 4889DE                      mov rsi, rbx
-    83 000000C0 E8(00000000)                call output_array
-    84                                  
-    85                                      ; block to return values to main driver
-    86 000000C5 48891C25[00000000]          mov [MyTwo + 0 * 8], rbx
-    87 000000CD 48B8-                       mov rax, items
-    87 000000CF [1000000000000000] 
-    88 000000D7 48890425[08000000]          mov [MyTwo + 1 * 8], rax
-    89                                  
-    90                                  
-    91                                  ; =========================================================================
-    92                                  
-    93 000000DF 48B8-                       mov rax, MyTwo
-    93 000000E1 [0000000000000000] 
-    94                                  
-    95 000000E9 9D                          popf                                                        
-    96 000000EA 415F                        pop        r15                                              
-    97 000000EC 415E                        pop        r14                                              
-    98 000000EE 415D                        pop        r13                                              
-    99 000000F0 415C                        pop        r12                                              
-   100 000000F2 415B                        pop        r11                                              
-   101 000000F4 415A                        pop        r10                                              
-   102 000000F6 4159                        pop        r9                                               
-   103 000000F8 4158                        pop        r8                                               
-   104 000000FA 5F                          pop        rdi                                              
-   105 000000FB 5E                          pop        rsi                                              
-   106 000000FC 5A                          pop        rdx                                              
-   107 000000FD 59                          pop        rcx                                              
-   108 000000FE 5B                          pop        rbx                                              
-   109 000000FF 5D                          pop        rbp  
-   110                                  
-   111 00000100 C3                          ret    
+    51                                  
+    52 0000001A B800000000                  mov rax, 0                                                              
+    53 0000001F 48BF-                       mov rdi, stringformat                                               ; '%s'
+    53 00000021 [9501000000000000] 
+    54 00000029 48BE-                       mov rsi, debugStart                                                 ; '~ director start ~'
+    54 0000002B [A501000000000000] 
+    55 00000033 E8(00000000)                call printf
+    56                                  
+    57 00000038 B800000000                  mov rax, 0
+    58 0000003D 48BF-                       mov rdi, stringformat                                               ; '%s'
+    58 0000003F [9501000000000000] 
+    59 00000047 48BE-                       mov rsi, intro                                                      ; 'This program will sort all of your doubles'
+    59 00000049 [0000000000000000] 
+    60 00000051 E8(00000000)                call printf                                                         
+    61                                  
+    62 00000056 B800000000                  mov rax, 0
+    63 0000005B 48BF-                       mov rdi, stringformat                                               ; '%s'
+    63 0000005D [9501000000000000] 
+    64 00000065 48BE-                       mov rsi, prompt                                                     ; 'Please enter floating point numbers seperated by white space. After the last numeric input enter at least one more white space and press ctrl-d.'
+    64 00000067 [2B00000000000000] 
+    65 0000006F E8(00000000)                call printf
+    66                                  
+    67                                      ; block for input_array
+    68 00000074 B800000000                  mov rax, 0
+    69 00000079 48BF-                       mov rdi, items
+    69 0000007B [1000000000000000] 
+    70 00000083 BE0A000000                  mov rsi, max_size
+    71 00000088 E8(00000000)                call input_array
+    72 0000008D 4889C3                      mov rbx, rax
+    73                                  
+    74 00000090 B800000000                  mov rax, 0
+    75 00000095 48BF-                       mov rdi, stringformat                                               ; "%s"
+    75 00000097 [9501000000000000] 
+    76 0000009F 48BE-                       mov rsi, thanks                                                     ; "Thank you. You entered these numbers"
+    76 000000A1 [BC00000000000000] 
+    77 000000A9 E8(00000000)                call printf
+    78                                  
+    79                                      ; block for output_array for the unsorted array
+    80                                  
+    81 000000AE B800000000                  mov rax, 0
+    82 000000B3 48BF-                       mov rdi, items
+    82 000000B5 [1000000000000000] 
+    83 000000BD 4889DE                      mov rsi, rbx
+    84 000000C0 E8(00000000)                call output_array
+    85                                  
+    86                                      ; block for sorting the array
+    87 000000C5 B800000000                  mov rax, 0
+    88 000000CA 48BF-                       mov rdi, items
+    88 000000CC [1000000000000000] 
+    89 000000D4 4889DE                      mov rsi, rbx
+    90 000000D7 E8(00000000)                call sort_array
+    91                                  
+    92 000000DC B800000000                  mov rax, 0
+    93 000000E1 48BF-                       mov rdi, stringformat
+    93 000000E3 [9501000000000000] 
+    94 000000EB 48BE-                       mov rsi, sort_prompt
+    94 000000ED [F600000000000000] 
+    95 000000F5 E8(00000000)                call printf
+    96                                  
+    97 000000FA B800000000                  mov rax, 0
+    98 000000FF 48BF-                       mov rdi, stringformat                                               ; "%s"
+    98 00000101 [9501000000000000] 
+    99 00000109 48BE-                       mov rsi, print_array                                                ; "The data in the array are now ordered as follows"
+    99 0000010B [3001000000000000] 
+   100 00000113 E8(00000000)                call printf
+   101                                  
+   102 00000118 B800000000                  mov rax, 0
+   103 0000011D 48BF-                       mov rdi, items
+   103 0000011F [1000000000000000] 
+   104 00000127 4889DE                      mov rsi, rbx
+   105 0000012A E8(00000000)                call output_array
+   106                                  
+   107 0000012F B800000000                  mov rax, 0
+   108 00000134 48BF-                       mov rdi, stringformat
+   108 00000136 [9501000000000000] 
+   109 0000013E 48BE-                       mov rsi, finish
+   109 00000140 [6101000000000000] 
+   110 00000148 E8(00000000)                call printf
+   111                                  
    112                                  
+   113                                      ; block to return values to main driver
+   114 0000014D 48891C25[00000000]          mov [MyTwo + 0 * 8], rbx
+   115 00000155 49BB-                       mov r11, items
+   115 00000157 [1000000000000000] 
+   116 0000015F 4C891C25[08000000]          mov [MyTwo + 1 * 8], r11
+   117                                  
+   118                                  
+   119                                  ; =========================================================================
+   120                                  
+   121 00000167 48B8-                       mov rax, MyTwo
+   121 00000169 [0000000000000000] 
+   122                                  
+   123 00000171 9D                          popf                                                        
+   124 00000172 415F                        pop        r15                                              
+   125 00000174 415E                        pop        r14                                              
+   126 00000176 415D                        pop        r13                                              
+   127 00000178 415C                        pop        r12                                              
+   128 0000017A 415B                        pop        r11                                              
+   129 0000017C 415A                        pop        r10                                              
+   130 0000017E 4159                        pop        r9                                               
+   131 00000180 4158                        pop        r8                                               
+   132 00000182 5F                          pop        rdi                                              
+   133 00000183 5E                          pop        rsi                                              
+   134 00000184 5A                          pop        rdx                                              
+   135 00000185 59                          pop        rcx                                              
+   136 00000186 5B                          pop        rbx                                              
+   137 00000187 5D                          pop        rbp  
+   138                                  
+   139 00000188 C3                          ret    
+   140                                  

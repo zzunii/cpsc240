@@ -22,10 +22,10 @@ echo "Compiling main.cpp file..."
 g++ -c -m64 -Wall main.cpp -o main-driver.o -fno-pie -no-pie -std=c++17
 
 echo "Compiling sort_array.cpp file..."
-g++ -c -m64 -Wall sort_array.cpp -o cpp-sort-array.o -fno-pie -no-pie -std=c++17
+g++ -c -m64 -Wall sort_array.cpp -o cpp-sort.o -fno-pie -no-pie -std=c++17
 
 echo "Linking the five object files..."
-g++ -m64 main-driver.o director-asm.o input-asm.o output-cpp.o -o sortarray -fno-pie -no-pie -std=c++17
+g++ -m64 main-driver.o director-asm.o input-asm.o output-cpp.o cpp-sort.o -o sortarray -fno-pie -no-pie -std=c++17
 
 echo "===== Running the program =========================================================================="
 echo ""

@@ -1,6 +1,7 @@
-global  asmfunction
+global  director
 extern  input_array
 extern  output_array
+extern  sort_array
 extern  printf
 extern  scanf
 max_size equ 10
@@ -27,7 +28,7 @@ section .bss
     items resq max_size
 
 section .text
-asmfunction:    
+director:    
     push       rbp                                              
     mov        rbp, rsp                                         
     push       rbx                                              
@@ -71,8 +72,8 @@ asmfunction:
     mov rbx, rax
 
     mov rax, 0
-    mov rdi, stringformat
-    mov rsi, thanks
+    mov rdi, stringformat                                               ; "%s"
+    mov rsi, thanks                                                     ; "Thank you. You entered these numbers"
     call printf
 
     ; block for output_array for the unsorted array
@@ -82,10 +83,37 @@ asmfunction:
     mov rsi, rbx
     call output_array
 
+    ; block for sorting the array
+    mov rax, 0
+    mov rdi, items
+    mov rsi, rbx
+    call sort_array
+
+    mov rax, 0
+    mov rdi, stringformat
+    mov rsi, sort_prompt
+    call printf
+
+    mov rax, 0
+    mov rdi, stringformat                                               ; "%s"
+    mov rsi, print_array                                                ; "The data in the array are now ordered as follows"
+    call printf
+
+    mov rax, 0
+    mov rdi, items
+    mov rsi, rbx
+    call output_array
+
+    mov rax, 0
+    mov rdi, stringformat
+    mov rsi, finish
+    call printf
+
+
     ; block to return values to main driver
     mov [MyTwo + 0 * 8], rbx
-    mov rax, items
-    mov [MyTwo + 1 * 8], rax
+    mov r11, items
+    mov [MyTwo + 1 * 8], r11
 
 
 ; =========================================================================
