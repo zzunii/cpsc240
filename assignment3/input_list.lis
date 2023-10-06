@@ -1,0 +1,126 @@
+     1                                  ; =====================================================================================================================
+     2                                  ; Program name: "Array Management System". This program demonstrates how to pass an array
+     3                                  ; Through assembly language and gathers the sum of the array. The max array length is 8.
+     4                                  ; Copyright (C) 2023 Dylan Zuniga
+     5                                  ; =====================================================================================================================
+     6                                  ; Author Information
+     7                                  ;     Author Name: Dylan Zuniga
+     8                                  ;     Author Email: zuniga18dz@csu.fullerton.edu
+     9                                  ;
+    10                                  ; Program Information
+    11                                  ;     Program Name: Array Management System
+    12                                  ;     Programming Languages: One module in C, four in x86
+    13                                  ;     Date Program Began: 2023-Sep-05
+    14                                  ;     Date Program Completed: 2023-Sep-24
+    15                                  ;     Date Comments Upgraded: 2023-Sep-24
+    16                                  ;     Files in the program: main.c, manage.asm, input_array.asm, output_array.asm, sum_array.asm, run.sh
+    17                                  ;     Status: Completed. Challenge Part not present in program.
+    18                                  ;
+    19                                  ; Purpose (Academic)
+    20                                  ;     Allow's the user to input 8 numbers into an array and get the total sum of the array
+    21                                  ;
+    22                                  ; This file
+    23                                  ;     File Name: input_array.asm
+    24                                  ;     Langauge: x86
+    25                                  ;     Syntax: Intel
+    26                                  ;     Assemble: nasm -f elf64 -l input_list.lis -o input-asm.o input_array.asm
+    27                                  ;     Link: gcc -m64 c-output.o manage-asm.o input-asm.o output-asm.o sum-asm.o -o arrayzz -fno-pie -no-pie -std=c++17
+    28                                  ; ===== Begin code area ===============================================================================================
+    29                                  
+    30                                  global input_array
+    31                                  extern scanf
+    32                                  extern printf
+    33                                  extern malloc
+    34                                  
+    35                                  
+    36                                  section .data
+    37 00000000 200A00                      newline db " ", 10, 0
+    38 00000003 256C6600                    floatformat db "%lf", 0
+    39 00000007 257300                      stringformat db "%s", 0 
+    40                                  
+    41                                  section .bss
+    42                                  
+    43                                  section .text
+    44                                  input_array:
+    45                                  
+    46                                  ; ======================================= 
+    47                                  ;  * * * * * * * 16 PUSHES * * * * * * *  
+    48                                  ; ======================================= 
+    49 00000000 55                          push       rbp                                              
+    50 00000001 4889E5                      mov        rbp, rsp                                         
+    51 00000004 53                          push       rbx                                              
+    52 00000005 51                          push       rcx                                              
+    53 00000006 52                          push       rdx                                              
+    54 00000007 56                          push       rsi                                              
+    55 00000008 57                          push       rdi                                              
+    56 00000009 4150                        push       r8                                               
+    57 0000000B 4151                        push       r9                                               
+    58 0000000D 4152                        push       r10                                              
+    59 0000000F 4153                        push       r11                                              
+    60 00000011 4154                        push       r12                                              
+    61 00000013 4155                        push       r13                                              
+    62 00000015 4156                        push       r14                                              
+    63 00000017 4157                        push       r15                                              
+    64 00000019 9C                          pushf
+    65                                  
+    66                                  ; =======================================
+    67                                  ;  * * * START OF THE APPLICATION * * *
+    68                                  ; =======================================
+    69                                  
+    70                                  ; Print prompt
+    71                                  
+    72 0000001A 4989FD                      mov r13, rdi            ; r13 is the array
+    73 0000001D 4989F6                      mov r14, rsi            ; r14 is the number of cells
+    74 00000020 4D31FF                      xor r15, r15            ; r15 == 0
+    75 00000023 EB00                        jmp input_begin
+    76                                  input_begin:
+    77                                  
+    78 00000025 4D39F7                      cmp r15, r14             ;if r15 >= r14
+    79 00000028 7431                        je input_done            ;     then we are done
+    80                                  
+    81 0000002A BF08000000                  mov rdi, 8
+    82 0000002F E8(00000000)                call malloc
+    83 00000034 4989C4                      mov r12, rax
+    84 00000037 48BF-                       mov rdi, floatformat
+    84 00000039 [0300000000000000] 
+    85 00000041 4C89E6                      mov rsi, r12
+    86 00000044 E8(00000000)                call scanf
+    87 00000049 4F8964FD00                  mov [r13 + 8 * r15], r12
+    88                                    
+    89 0000004E 4898                        cdqe                   
+    90 00000050 4883F8FF                    cmp rax, -1                 ;checks for control_d
+    91 00000054 7405                        je input_done               ;control_d is pressed
+    92                                      
+    93 00000056 49FFC7                      inc r15
+    94                                  
+    95 00000059 EBCA                        jmp input_begin                ;Repeat the loop
+    96                                  
+    97                                  input_done:
+    98                                  
+    99 0000005B 48BF-                       mov rdi, newline
+    99 0000005D [0000000000000000] 
+   100 00000065 E8(00000000)                call printf
+   101                                  
+   102 0000006A 4C89F8                      mov rax, r15            ; returns the count of the array
+   103                                      
+   104                                  
+   105                                  ; =======================================
+   106                                  ; * * * * * * * * 16 POPS * * * * * * * *
+   107                                  ; =======================================
+   108 0000006D 9D                          popf                                                        
+   109 0000006E 415F                        pop        r15                                              
+   110 00000070 415E                        pop        r14                                              
+   111 00000072 415D                        pop        r13                                              
+   112 00000074 415C                        pop        r12                                              
+   113 00000076 415B                        pop        r11                                              
+   114 00000078 415A                        pop        r10                                              
+   115 0000007A 4159                        pop        r9                                               
+   116 0000007C 4158                        pop        r8                                               
+   117 0000007E 5F                          pop        rdi                                              
+   118 0000007F 5E                          pop        rsi                                              
+   119 00000080 5A                          pop        rdx                                              
+   120 00000081 59                          pop        rcx                                              
+   121 00000082 5B                          pop        rbx                                              
+   122 00000083 5D                          pop        rbp      
+   123                                  
+   124 00000084 C3                          ret
